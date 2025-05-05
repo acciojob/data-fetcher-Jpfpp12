@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import 'regenerator-runtime/runtime';
+
 
 function DataFetcher() {
   const [data, setData] = useState(null);
