@@ -1,32 +1,40 @@
 import React, { useState, useEffect } from 'react';
 
-function App() {
+function DataFetcher() {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('https://dummyjson.com/products')
-      .then(response => response.json())
-      .then(result => {
-        setData(result);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err.message);
-        setLoading(false);
-      });
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://dummyjson.com/products');
+        if (!response.ok) {
+          throw new Error('Error fetching data');
+        }
+        const data = await response.json();
+        setData(data);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchData();
   }, []);
 
+  if (error) {
+    return <div>An error occurred: {error}</div>;
+  }
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="App">
-        {/* Do not remove the main div */}
-      <h1>Fetched Data from API</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
-      {data && !loading && <pre>{JSON.stringify(data, null, 2)}</pre>}
+    <div>
+      <h1>Data Fetched from API</h1>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>
   );
 }
 
-export default App;
+export default DataFetcher;
